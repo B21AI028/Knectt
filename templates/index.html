@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KNECTT Chatbot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+    <div class="chat-container">
+        <div class="chat-header"> <img src="{{ url_for('static', filename='bot-avatar.png') }}" alt="Bot Avatar">
+            <h1>KNECTT Health Assistant</h1>
+        </div>
+        <div id="chatbox">
+            <div class="bot-message"> Hi! <b>Renu</b> 👋 Welcome to KNECTT<br> Choose any option where you need
+                guidance: <div> <button onclick="chooseOption(1)">1. Pre-purchase questions</button> <button
+                        onclick="chooseOption(2)">2. Others</button> <button onclick="chooseOption(3)">3. Edit Medical
+                        Profile</button> </div>
+            </div>
+        </div>
+        <div class="input-container"> <input id="userInput" type="text" placeholder="Type your message..."> <button
+                onclick="sendMessage()">Send</button> </div>
+    </div>
+    <script> async function sendMessage() { const inputField = document.getElementById("userInput"); const userMessage = inputField.value.trim(); if (!userMessage) return; showUserMessage(userMessage); const response = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: userMessage }) }); const data = await response.json(); showBotMessage(data.reply); inputField.value = ""; } async function chooseOption(option) { showUserMessage("Option " + option); const response = await fetch("/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ option: option }) }); const data = await response.json(); showBotMessage(data.reply); } function showUserMessage(msg) { const chatbox = document.getElementById("chatbox"); const userDiv = document.createElement("div"); userDiv.className = "user-message"; userDiv.innerText = msg; chatbox.appendChild(userDiv); chatbox.scrollTop = chatbox.scrollHeight; } function showBotMessage(msg) { const chatbox = document.getElementById("chatbox"); const botDiv = document.createElement("div"); botDiv.className = "bot-message"; botDiv.innerHTML = msg; chatbox.appendChild(botDiv); chatbox.scrollTop = chatbox.scrollHeight; } </script>
+</body>
+
+</html>
